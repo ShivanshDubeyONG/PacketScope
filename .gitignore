@@ -1,0 +1,47 @@
+# Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.cache/
+frontend/coverage/
+
+# Databases and storage
+backend/data/
+*.sqlite
+*.db
+backend/uploads/
+uploads/
+sample_data/*.pcap
+sample_data/*.pcapng
+!sample_data/sample.pcap
+!sample_data/synthetic_sample.pcap
+
+# Environment variables & secrets
+.env
+.env.local
+*.env
+!.env.example
+
+# Logs and IDE
+*.log
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

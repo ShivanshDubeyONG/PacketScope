@@ -9,8 +9,7 @@ import {
   UploadCloud,
   CheckCircle2,
   RefreshCw,
-  Sun,
-  Moon,
+  Network,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -29,12 +28,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   tsharkAvailable,
 }) => {
   const navItems = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'alerts', label: 'Anomalies & Evidence', icon: ShieldAlert },
+    { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'packets', label: 'Packet Explorer', icon: Search },
+    { id: 'alerts', label: 'Security Alerts', icon: ShieldAlert },
     { id: 'traffic', label: 'Traffic Intelligence', icon: Activity },
-    { id: 'history', label: 'Historical & Reports', icon: History },
-    { id: 'exports', label: 'Data Exports', icon: FileDown },
+    { id: 'history', label: 'Analysis History', icon: History },
+    { id: 'exports', label: 'Export Results', icon: FileDown },
   ];
 
   return (
@@ -44,9 +43,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-5 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-500 flex items-center justify-center font-bold">
-              <svg className="w-5 h-5 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-              </svg>
+              <Network className="w-5 h-5 text-sky-500" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
@@ -57,8 +54,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
             </div>
           </div>
-          <p className="text-[11px] text-slate-500 mt-2 leading-relaxed font-normal">
-            Web-Based PCAP & Network Traffic Analysis Platform
+          <p className="text-[11px] text-slate-500 mt-2 leading-relaxed">
+            PCAP &amp; Network Traffic Analysis Platform
           </p>
         </div>
 
@@ -66,10 +63,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="px-3 pt-4">
           <button
             onClick={onOpenUpload}
-            className="w-full flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-600 text-white font-medium text-xs px-3.5 py-2.5 rounded-lg transition-all duration-200 shadow-sm shadow-sky-500/20 hover:shadow-sky-500/30"
+            className="w-full flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-600 text-white font-semibold text-xs px-3.5 py-2.5 rounded-lg transition-all duration-200 shadow-sm shadow-sky-500/20 hover:shadow-sky-500/30"
           >
             <UploadCloud className="w-4 h-4" />
-            <span>Upload New Capture</span>
+            <span>Upload PCAP File</span>
           </button>
         </div>
 
@@ -82,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-150 ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-150 ${
                   isActive
                     ? 'bg-sky-50 text-sky-700 font-semibold border-l-4 border-sky-500 pl-2'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -100,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
       </div>
 
-      {/* Footer Status Widget (Matching reference image) */}
+      {/* Footer Status Widget */}
       <div className="p-4 border-t border-slate-100 bg-slate-50/50 space-y-3">
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
@@ -112,7 +109,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }`}
             />
             <span className="font-medium text-slate-700">
-              {tsharkAvailable ? 'Engine Online' : 'TShark Missing'}
+              {tsharkAvailable ? 'TShark Engine Online' : 'TShark Not Found'}
             </span>
           </div>
           <button
@@ -124,14 +121,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* Subtle Theme/Security Badge */}
         <div className="flex items-center justify-between bg-white px-2.5 py-1.5 rounded-md border border-slate-200 text-[11px] text-slate-500">
           <span className="flex items-center gap-1.5 text-slate-600 font-medium">
             <CheckCircle2 className="w-3 h-3 text-sky-500" />
-            Defensive Sandbox
+            Defensive Mode
           </span>
           <span className="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 font-mono">
-            PyShark / TShark
+            PyShark Dissector
           </span>
         </div>
       </div>

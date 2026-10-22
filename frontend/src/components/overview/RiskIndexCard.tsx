@@ -27,7 +27,7 @@ export const RiskIndexCard: React.FC<RiskIndexCardProps> = ({ capture, onViewAle
 
   return (
     <div className="bg-slate-900 text-white rounded-xl p-5 shadow-card border border-slate-800 flex flex-col justify-between relative overflow-hidden">
-      {/* Background subtle glow effect */}
+      {/* Background subtle light-blue glow */}
       <div className="absolute -top-12 -right-12 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl pointer-events-none" />
 
       <div>
@@ -35,12 +35,12 @@ export const RiskIndexCard: React.FC<RiskIndexCardProps> = ({ capture, onViewAle
         <div className="flex items-center justify-between pb-3 border-b border-slate-800">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold tracking-widest text-slate-400 uppercase">
-              RISK INDEX • HEURISTIC
+              CAPTURE RISK SCORE
             </span>
             <div className="group relative cursor-pointer">
               <Info className="w-3.5 h-3.5 text-slate-500 hover:text-slate-300 transition-colors" />
               <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 hidden group-hover:block w-48 p-2 bg-slate-800 text-[10px] text-slate-300 rounded shadow-lg border border-slate-700 z-30">
-                Composite heuristic score (0-100) calculated from deterministic rule weights.
+                Composite heuristic risk score (0-100) calculated from deterministic detection rule weights.
               </div>
             </div>
           </div>
@@ -69,22 +69,22 @@ export const RiskIndexCard: React.FC<RiskIndexCardProps> = ({ capture, onViewAle
 
         <p className="text-xs text-slate-400 leading-relaxed">
           {score === 0
-            ? 'No suspicious patterns or anomaly indicators triggered.'
-            : `${level} suspicion level: Multiple threat indicators flagged by rule heuristics.`}
+            ? 'No suspicious patterns or anomaly indicators flagged in this capture.'
+            : `${level} threat suspicion: Multiple suspicious behavioral indicators detected.`}
         </p>
       </div>
 
-      {/* Footer Details */}
+      {/* Footer */}
       <div className="pt-4 border-t border-slate-800/80 mt-4 flex items-center justify-between text-[11px]">
         <div className="text-slate-400">
-          <span className="text-slate-500 uppercase text-[9px] font-bold block">EVIDENCE GRADE</span>
+          <span className="text-slate-500 uppercase text-[9px] font-bold block">SCORING METHOD</span>
           <span className="font-medium text-slate-300">Deterministic Rules</span>
         </div>
         <button
           onClick={onViewAlerts}
           className="text-sky-400 hover:text-sky-300 font-semibold text-[11px] flex items-center gap-1 transition-colors"
         >
-          View Evidence →
+          View Alerts →
         </button>
       </div>
     </div>

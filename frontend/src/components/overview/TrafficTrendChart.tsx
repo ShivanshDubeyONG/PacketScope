@@ -26,14 +26,13 @@ export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({ timeSeries
 
   return (
     <div className="bg-white rounded-xl p-5 border border-slate-200/90 shadow-card">
-      {/* Header matching Telemetry Trend in reference image */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-bold text-slate-900 text-sm tracking-tight">
-            Telemetry trend
+            Traffic Over Time
           </h3>
           <p className="text-[11px] text-slate-500 font-medium">
-            Packets and throughput volume over capture timeline
+            Timeline of packet arrival and wire throughput across capture duration
           </p>
         </div>
 
@@ -66,7 +65,7 @@ export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({ timeSeries
       <div className="h-64 w-full">
         {chartData.length === 0 ? (
           <div className="h-full flex items-center justify-center text-slate-400 text-xs">
-            No telemetry points recorded
+            No packet timeline data recorded
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">

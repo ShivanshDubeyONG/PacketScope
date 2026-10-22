@@ -7,7 +7,7 @@ interface ProtocolChartProps {
 
 const COLORS = [
   '#0284c7', // brand-600
-  '#38bdf8', // brand-400 (light light blue accent)
+  '#38bdf8', // brand-400 (light light blue)
   '#06b6d4', // cyan-500
   '#6366f1', // indigo-500
   '#a855f7', // purple-500
@@ -27,19 +27,19 @@ export const ProtocolChart: React.FC<ProtocolChartProps> = ({ distribution }) =>
       <div>
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-bold text-slate-900 text-sm tracking-tight">
-            Diagnostic domains
+            Protocol Distribution
           </h3>
           <span className="text-[11px] font-mono text-slate-400">
-            {total} total frames
+            {total} packets
           </span>
         </div>
         <p className="text-[11px] text-slate-500 mb-4">
-          Protocol distribution across dissected packets
+          Breakdown across transport and application protocols
         </p>
 
         {data.length === 0 ? (
           <div className="h-44 flex items-center justify-center text-slate-400 text-xs">
-            No protocols analyzed
+            No protocol distribution available
           </div>
         ) : (
           <div className="h-44 w-full">
@@ -65,7 +65,7 @@ export const ProtocolChart: React.FC<ProtocolChartProps> = ({ distribution }) =>
                       const pct = total > 0 ? ((Number(item.value) / total) * 100).toFixed(1) : 0;
                       return (
                         <div className="bg-slate-900 text-white text-xs rounded-lg p-2 shadow-lg border border-slate-800">
-                          <span className="font-bold text-sky-400">{item.name}</span>: {item.value} ({pct}%)
+                          <span className="font-bold text-sky-400">{item.name}</span>: {item.value} pkts ({pct}%)
                         </div>
                       );
                     }

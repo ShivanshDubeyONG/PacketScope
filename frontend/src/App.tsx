@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   UploadCloud,
-  Layers,
   ShieldAlert,
   Search,
   Activity,
   History,
   FileDown,
-  Info,
-  Server,
-  Zap,
+  Network,
+  ShieldCheck,
 } from 'lucide-react';
 
 import { api } from './services/api';
@@ -113,15 +111,15 @@ export function App() {
         />
 
         <main className="flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
-          {/* If no captures yet, show Hero / Quick Start Banner */}
+          {/* If no captures exist yet */}
           {captures.length === 0 && !loading ? (
             <div className="bg-white rounded-2xl p-10 border border-slate-200 text-center shadow-card relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-sky-50 rounded-full blur-3xl -z-10" />
               <div className="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center mx-auto mb-4">
-                <Layers className="w-8 h-8" />
+                <Network className="w-8 h-8" />
               </div>
               <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                Welcome to PacketScope
+                PacketScope Network Traffic Analysis
               </h1>
               <p className="text-sm text-slate-600 max-w-xl mx-auto mt-2 leading-relaxed">
                 Turn raw packet captures into searchable traffic intelligence and explainable security alerts.
@@ -132,16 +130,16 @@ export function App() {
                   className="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-lg shadow-sm shadow-sky-500/20 transition-all flex items-center gap-2"
                 >
                   <UploadCloud className="w-4 h-4" />
-                  <span>Analyze Your First Capture</span>
+                  <span>Upload &amp; Analyze PCAP File</span>
                 </button>
               </div>
             </div>
           ) : (
             <>
-              {/* Overview Tab (Directly matching user's reference image!) */}
+              {/* Dashboard / Overview Tab */}
               {activeTab === 'overview' && (
                 <div className="space-y-6 animate-in fade-in duration-150">
-                  {/* Page Title & Badges */}
+                  {/* Page Title & Status */}
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2">
                     <div>
                       <div className="text-[11px] font-bold text-slate-400 font-mono tracking-wider uppercase mb-1">
@@ -150,34 +148,35 @@ export function App() {
                           : 'REAL-TIME PCAP TELEMETRY'}
                       </div>
                       <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                        Condition Overview
+                        Network Traffic Overview
                       </h1>
                       <p className="text-xs text-slate-500 mt-1">
-                        Live PCAP dissection, heuristic threat indicators, anomaly detection, and traffic telemetry.
+                        Turn raw packet captures into searchable traffic intelligence and explainable security alerts.
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-1 bg-white border border-slate-200 text-slate-700 text-[11px] font-semibold rounded-md shadow-xs">
-                        CAPABILITY C2 • Threat Intelligence
+                      <span className="px-2.5 py-1 bg-white border border-slate-200 text-slate-700 text-[11px] font-semibold rounded-md shadow-xs flex items-center gap-1.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-sky-500" />
+                        PyShark Dissector Active
                       </span>
                       <span className="px-2.5 py-1 bg-sky-50 border border-sky-200 text-sky-700 text-[11px] font-semibold rounded-md">
-                        Evaluation Gated
+                        Defensive Sandbox
                       </span>
                     </div>
                   </div>
 
-                  {/* Top 4 Metrics Cards Row (Matching Reference) */}
+                  {/* Top 4 Metrics Cards Row */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* 1. Health/Risk Index Card (Dark Sleek Card) */}
+                    {/* 1. Risk Score Card (Sleek Dark Card) */}
                     <RiskIndexCard
                       capture={currentCapture}
                       onViewAlerts={() => setActiveTab('alerts')}
                     />
 
-                    {/* 2. Top-Oil / Packets Metric Card */}
+                    {/* 2. Total Packets Metric Card */}
                     <MetricCard
-                      label="TOTAL FRAMES"
+                      label="TOTAL PACKETS"
                       value={currentCapture?.packet_count.toLocaleString() ?? '—'}
                       subValue="packets"
                       subLabel={
@@ -198,9 +197,9 @@ export function App() {
                       onClick={() => setActiveTab('packets')}
                     />
 
-                    {/* 3. Throughput & Volume Card */}
+                    {/* 3. Capture Volume Card */}
                     <MetricCard
-                      label="PAYLOAD VOLUME"
+                      label="CAPTURE VOLUME"
                       value={
                         currentCapture
                           ? (currentCapture.file_size / 1024).toFixed(1)
@@ -209,7 +208,7 @@ export function App() {
                       subValue="KB"
                       subLabel={
                         statistics
-                          ? `Total wire bytes: ${statistics.total_bytes.toLocaleString()} B`
+                          ? `Wire volume: ${statistics.total_bytes.toLocaleString()} bytes`
                           : undefined
                       }
                       secondaryInfo={[
@@ -225,14 +224,14 @@ export function App() {
                       onClick={() => setActiveTab('traffic')}
                     />
 
-                    {/* 4. Maintenance / Security Advisories Card */}
+                    {/* 4. Security Alerts Card */}
                     <AlertsSummaryCard
                       alertsData={alertsData}
                       onViewAll={() => setActiveTab('alerts')}
                     />
                   </div>
 
-                  {/* Telemetry Trend & Protocol Domains Row */}
+                  {/* Traffic Over Time & Protocol Distribution */}
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     <div className="lg:col-span-2">
                       <TrafficTrendChart timeSeries={statistics?.time_series || []} />
@@ -244,7 +243,7 @@ export function App() {
                     </div>
                   </div>
 
-                  {/* Top Talkers & Conversations Row */}
+                  {/* Top Talkers & Conversations */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <TopTalkersTable
                       topTalkers={statistics?.top_talkers || []}
@@ -257,7 +256,7 @@ export function App() {
                 </div>
               )}
 
-              {/* Anomalies & Evidence Tab */}
+              {/* Security Alerts Tab */}
               {activeTab === 'alerts' && (
                 <div className="animate-in fade-in duration-150">
                   <AlertsView alertsData={alertsData} />
@@ -276,7 +275,7 @@ export function App() {
                 <div className="space-y-6 animate-in fade-in duration-150">
                   <div>
                     <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                      Traffic Intelligence
+                      Traffic Intelligence &amp; Endpoints
                     </h2>
                     <p className="text-xs text-slate-500 mt-1">
                       Deep breakdown of endpoint conversations and port utilization
@@ -316,7 +315,7 @@ export function App() {
                 </div>
               )}
 
-              {/* Historical Captures Tab */}
+              {/* Analysis History Tab */}
               {activeTab === 'history' && (
                 <div className="animate-in fade-in duration-150">
                   <CaptureHistory

@@ -180,8 +180,8 @@ The frontend design follows a high-tech cybersecurity diagnostic aesthetic chara
 - A dark slate **Risk Index card** featuring real-time risk gauges.
 
 ### 9.2 Functional Modules
-1. **Condition Overview:** Live dashboard with Risk Index, frame counters, throughput, Telemetry Trend area chart, Diagnostic Domains doughnut chart, Top Talkers, and Top Conversations.
-2. **Anomalies & Evidence:** Severity filtering (Critical, High, Medium, Low) with expandable evidence drawers.
+1. **Network Traffic Overview:** Live dashboard with Risk Score card, frame counters, throughput, Traffic Over Time area chart, Protocol Distribution doughnut chart, Top Talkers, and Top Conversations.
+2. **Security Alerts & Anomalies:** Severity filtering (Critical, High, Medium, Low) with expandable evidence drawers and mitigation guidance.
 3. **Packet Explorer:** Paginated metadata table with server-side protocol, port, and full-text search.
 4. **Data Exports Panel:** One-click downloads for SQLite, XML, CSV, and JSON formats.
 

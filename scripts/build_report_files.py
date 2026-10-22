@@ -168,8 +168,8 @@ def build_docx(output_path: str):
         "The user interface follows a modern cybersecurity operations center design with an off-white background (#f8fafc), "
         "crisp white cards (#ffffff), and a light-blue accent palette (#38bdf8 / #0ea5e9). Key views include:"
     )
-    doc.add_paragraph("• Condition Overview: Risk Index card, frame metrics, throughput, Telemetry Trend area chart, and Diagnostic Domains doughnut chart.")
-    doc.add_paragraph("• Anomalies & Evidence: Filterable alert cards with forensic evidence JSON drawers and mitigation recommendations.")
+    doc.add_paragraph("• Network Traffic Overview: Risk Score card, packet metrics, throughput volume, Traffic Over Time area chart, and Protocol Distribution doughnut chart.")
+    doc.add_paragraph("• Security Alerts & Anomalies: Filterable alert cards with forensic evidence JSON drawers and defensive mitigation recommendations.")
     doc.add_paragraph("• Packet Explorer: Server-side search and filtering across IPs, ports, and protocols with deep packet inspection modals.")
     doc.add_paragraph("• Data Exports Panel: Downloadable SQLite database, structured XML, packet CSV, and JSON intelligence reports.")
     doc.add_page_break()
@@ -405,8 +405,8 @@ def build_pdf(output_path: str):
         "crisp white cards (#ffffff), and a light-blue accent palette (#38bdf8 / #0ea5e9). Key views include:",
         body_style
     ))
-    story.append(Paragraph("• <b>Condition Overview</b>: Risk Index card, frame metrics, throughput, Telemetry Trend area chart, and Diagnostic Domains doughnut chart.", body_style))
-    story.append(Paragraph("• <b>Anomalies & Evidence</b>: Filterable alert cards with forensic evidence JSON drawers and mitigation recommendations.", body_style))
+    story.append(Paragraph("• <b>Network Traffic Overview</b>: Risk Score card, packet metrics, throughput volume, Traffic Over Time area chart, and Protocol Distribution doughnut chart.", body_style))
+    story.append(Paragraph("• <b>Security Alerts & Anomalies</b>: Filterable alert cards with forensic evidence JSON drawers and defensive mitigation recommendations.", body_style))
     story.append(Paragraph("• <b>Packet Explorer</b>: Server-side search and filtering across IPs, ports, and protocols with deep packet inspection modals.", body_style))
     story.append(Paragraph("• <b>Data Exports Panel</b>: Downloadable SQLite database, structured XML, packet CSV, and JSON intelligence reports.", body_style))
     story.append(PageBreak())

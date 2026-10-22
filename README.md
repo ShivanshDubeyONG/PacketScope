@@ -6,6 +6,16 @@ PacketScope is a web application that allows users to upload authorized `.pcap` 
 
 ---
 
+## Live Localhost Links
+
+When the development servers are running:
+- **Web Application Dashboard:** [http://localhost:5173/](http://localhost:5173/)
+- **FastAPI Interactive API Documentation (Swagger UI):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **FastAPI Alternative Documentation (ReDoc):** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+- **Health Check Endpoint:** [http://127.0.0.1:8000/api/v1/health](http://127.0.0.1:8000/api/v1/health)
+
+---
+
 ## Implemented Prescribed Modules
 
 1. **PCAP Analysis**
@@ -17,9 +27,9 @@ PacketScope is a web application that allows users to upload authorized `.pcap` 
 
 ---
 
-## Architecture Overview
+## Project Structure
 
-```
+```text
 packetscope/
 ├── backend/
 │   ├── app/
@@ -30,73 +40,105 @@ packetscope/
 │   │   ├── services/       # Parser, stats calculator, detection engine, exporters
 │   │   └── main.py         # FastAPI application entry point
 │   ├── tests/              # 22 comprehensive Pytest test cases
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── Dockerfile          # Backend container with non-interactive TShark
+├── frontend/
+│   ├── src/
+│   │   ├── components/     # Overview, alerts, packets, history, exports, layout
+│   │   ├── services/       # Type-safe API client
+│   │   ├── types/          # TypeScript definitions
+│   │   ├── App.tsx         # Main dashboard router & state
+│   │   └── main.tsx
+│   ├── package.json
+│   ├── tailwind.config.js  # Clean theme with light-blue accents
+│   ├── vite.config.ts
+│   └── Dockerfile          # Frontend production container with Nginx
 ├── docs/
-│   └── PHASE1_BACKEND.md   # Complete backend technical documentation
+│   ├── PacketScope_Project_Report.pdf   # 12-page technical report
+│   ├── PacketScope_Project_Report.docx  # DOCX format report
+│   ├── PROJECT_REPORT_SOURCE.md         # Markdown report source
+│   └── PHASE1_BACKEND.md                # Backend architecture reference
 ├── sample_data/
-│   ├── synthetic_sample.pcap
-│   ├── verified_export.xml
-│   └── verified_export.sqlite
+│   ├── synthetic_sample.pcap            # Safe synthetic test PCAP (235 packets)
+│   └── verified_export.xml
 ├── scripts/
-│   ├── generate_sample_pcap.py
-│   └── verify_phase1.py
+│   ├── generate_sample_pcap.py          # Synthetic generator with Scapy
+│   ├── verify_phase1.py                 # Live verification script
+│   └── build_report_files.py            # Report generator
+├── docker-compose.yml
 ├── .env.example
 ├── .gitignore
 ├── LICENSE
+├── CONTRIBUTING.md
+├── SECURITY.md
 ├── PROGRESS.md
 └── README.md
 ```
 
 ---
 
-## Quickstart
+## Running the Application
 
-### 1. Prerequisites
+### Option 1: Docker Compose (Recommended)
+Ensure Docker and Docker Compose are installed, then run:
+```bash
+docker compose up --build
+```
+- Frontend UI: `http://localhost:3000`
+- Backend API & Docs: `http://localhost:8000/docs`
+
+### Option 2: Manual Local Development
+
+#### 1. Prerequisites
 - Python 3.10+
-- Wireshark / TShark installed on host system ([wireshark.org](https://www.wireshark.org/download.html))
+- Node.js 18+ and npm
+- Wireshark / TShark installed ([wireshark.org](https://www.wireshark.org/download.html))
 
-### 2. Environment Setup
+#### 2. Backend Setup
 ```powershell
-# Windows
+# In root directory:
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r backend/requirements.txt
-```
 
-### 3. Generate Test Data & Verify
-```powershell
-# Generate safe synthetic PCAP
-python scripts/generate_sample_pcap.py sample_data/synthetic_sample.pcap
-
-# Run test suite (22 tests)
+# Run tests (22 tests)
 pytest -v backend/tests
 
-# Run live verification script
-python scripts/verify_phase1.py
+# Start backend server:
+uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-### 4. Run Development Server
+#### 3. Frontend Setup
 ```powershell
-uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
+# In a second terminal:
+cd frontend
+npm install
+npm run dev
 ```
-- API Docs: `http://127.0.0.1:8000/docs`
-- Health Endpoint: `http://127.0.0.1:8000/api/v1/health`
+Open `http://localhost:5173/` in your browser.
 
 ---
 
-## Detection Rules
+## 12-Page Project Report
+
+The project documentation includes a comprehensive academic report formatted to 12 pages:
+- **PDF Report:** [docs/PacketScope_Project_Report.pdf](file:///c:/Users/Shivansh/Desktop/PacketScope/docs/PacketScope_Project_Report.pdf) (Verified 12 pages)
+- **DOCX Report:** [docs/PacketScope_Project_Report.docx](file:///c:/Users/Shivansh/Desktop/PacketScope/docs/PacketScope_Project_Report.docx)
+- **Markdown Source:** [docs/PROJECT_REPORT_SOURCE.md](file:///c:/Users/Shivansh/Desktop/PacketScope/docs/PROJECT_REPORT_SOURCE.md)
+
+---
+
+## Detection Rules & Risk Scoring
 
 PacketScope includes 8 configurable, deterministic detection rules:
-1. **Possible Port Scan (`RULE_PORT_SCAN`)**
-2. **Connection Burst (`RULE_CONNECTION_BURST`)**
-3. **Repeated TCP SYN Activity (`RULE_REPEATED_TCP_SYN`)**
-4. **Suspicious / Monitored Port Activity (`RULE_SUSPICIOUS_PORT_ACTIVITY`)**
-5. **ICMP Flood Indicator (`RULE_ICMP_FLOOD`)**
-6. **Large DNS Query Indicator (`RULE_LARGE_DNS_QUERY`)**
-7. **Unencrypted Application Protocol (`RULE_UNENCRYPTED_PROTOCOL`)**
-8. **Single-Source Traffic Concentration (`RULE_TRAFFIC_CONCENTRATION`)**
-
-Each alert includes structured evidence, timestamps, event counts, defensive recommendations, and a disclaimer that alerts indicate suspicious behavior rather than confirmed compromise.
+1. **Possible Port Scan (`RULE_PORT_SCAN`)** — Distinct destination ports contacted on target.
+2. **Connection Burst (`RULE_CONNECTION_BURST`)** — High connection initiation rate.
+3. **Repeated TCP SYN Activity (`RULE_REPEATED_TCP_SYN`)** — SYN flood and half-open scanning.
+4. **Suspicious / Monitored Port Activity (`RULE_SUSPICIOUS_PORT_ACTIVITY`)** — Monitored service ports (4444, 1337, 21, 23, etc.).
+5. **ICMP Flood Indicator (`RULE_ICMP_FLOOD`)** — Excessive ICMP rates.
+6. **Large DNS Query Indicator (`RULE_LARGE_DNS_QUERY`)** — DNS query lengths $\ge$ 60 chars (DNS tunneling).
+7. **Unencrypted Application Protocol (`RULE_UNENCRYPTED_PROTOCOL`)** — Plaintext HTTP, FTP, Telnet.
+8. **Single-Source Traffic Concentration (`RULE_TRAFFIC_CONCENTRATION`)** — Single source generating $\ge$ 60% of total volume.
 
 ---
 

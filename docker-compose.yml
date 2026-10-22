@@ -1,0 +1,32 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: packetscope-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+      - DEBUG=false
+      - SQLITE_DB_PATH=/app/backend/data/packetscope.db
+      - UPLOAD_DIR=/app/backend/uploads
+    volumes:
+      - packetscope_data:/app/backend/data
+      - packetscope_uploads:/app/backend/uploads
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: packetscope-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  packetscope_data:
+  packetscope_uploads:

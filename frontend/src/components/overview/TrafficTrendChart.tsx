@@ -12,9 +12,13 @@ import { TimeSeriesPoint } from '../../types';
 
 interface TrafficTrendChartProps {
   timeSeries: TimeSeriesPoint[];
+  darkMode?: boolean;
 }
 
-export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({ timeSeries }) => {
+export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({
+  timeSeries,
+  darkMode = true,
+}) => {
   const [metric, setMetric] = useState<'packets' | 'bytes'>('packets');
 
   const chartData = (timeSeries || []).map((pt, idx) => ({
@@ -25,25 +29,33 @@ export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({ timeSeries
   }));
 
   return (
-    <div className="bg-white rounded-xl p-5 border border-slate-200/90 shadow-card">
+    <div
+      className={`rounded-xl p-5 border shadow-card transition-all ${
+        darkMode ? 'bg-slate-900 border-slate-800/90 text-white' : 'bg-white border-slate-200/90 text-slate-900'
+      }`}
+    >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-bold text-slate-900 text-sm tracking-tight">
-            Traffic Over Time
-          </h3>
-          <p className="text-[11px] text-slate-500 font-medium">
+          <h3 className="font-bold text-sm tracking-tight">Traffic Over Time</h3>
+          <p className="text-[11px] text-slate-400 font-medium">
             Timeline of packet arrival and wire throughput across capture duration
           </p>
         </div>
 
         {/* Tab pills */}
-        <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/70 text-xs">
+        <div
+          className={`flex items-center p-0.5 rounded-lg border text-xs ${
+            darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-100 border-slate-200/70'
+          }`}
+        >
           <button
             onClick={() => setMetric('packets')}
             className={`px-3 py-1 rounded-md font-medium text-xs transition-colors ${
               metric === 'packets'
-                ? 'bg-white text-slate-900 shadow-sm font-semibold'
-                : 'text-slate-600 hover:text-slate-900'
+                ? darkMode
+                  ? 'bg-sky-500/20 text-sky-300 font-bold border border-sky-500/30'
+                  : 'bg-white text-slate-900 shadow-sm font-semibold'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             Packets
@@ -52,8 +64,10 @@ export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({ timeSeries
             onClick={() => setMetric('bytes')}
             className={`px-3 py-1 rounded-md font-medium text-xs transition-colors ${
               metric === 'bytes'
-                ? 'bg-white text-slate-900 shadow-sm font-semibold'
-                : 'text-slate-600 hover:text-slate-900'
+                ? darkMode
+                  ? 'bg-sky-500/20 text-sky-300 font-bold border border-sky-500/30'
+                  : 'bg-white text-slate-900 shadow-sm font-semibold'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             Bytes
@@ -64,7 +78,7 @@ export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({ timeSeries
       {/* Chart */}
       <div className="h-64 w-full">
         {chartData.length === 0 ? (
-          <div className="h-full flex items-center justify-center text-slate-400 text-xs">
+          <div className="h-full flex items-center justify-center text-slate-500 text-xs">
             No packet timeline data recorded
           </div>
         ) : (
@@ -76,16 +90,20 @@ export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({ timeSeries
                   <stop offset="95%" stopColor="#38bdf8" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke={darkMode ? '#1e293b' : '#f1f5f9'}
+                vertical={false}
+              />
               <XAxis
                 dataKey="time"
-                stroke="#94a3b8"
+                stroke="#64748b"
                 fontSize={10}
                 tickLine={false}
-                axisLine={{ stroke: '#e2e8f0' }}
+                axisLine={{ stroke: darkMode ? '#334155' : '#e2e8f0' }}
               />
               <YAxis
-                stroke="#94a3b8"
+                stroke="#64748b"
                 fontSize={10}
                 tickLine={false}
                 axisLine={false}
@@ -95,9 +113,9 @@ export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({ timeSeries
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
                     return (
-                      <div className="bg-slate-900 text-white text-xs rounded-lg p-2.5 shadow-lg border border-slate-800">
+                      <div className="bg-slate-950 text-white text-xs rounded-lg p-2.5 shadow-xl border border-slate-800">
                         <div className="text-[10px] text-slate-400 mb-1">{data.fullTime}</div>
-                        <div className="font-semibold text-sky-400 font-mono">
+                        <div className="font-bold text-sky-400 font-mono">
                           {metric === 'packets'
                             ? `${data.packets} packets`
                             : `${data.bytes} bytes`}
@@ -111,7 +129,7 @@ export const TrafficTrendChart: React.FC<TrafficTrendChartProps> = ({ timeSeries
               <Area
                 type="monotone"
                 dataKey={metric}
-                stroke="#0ea5e9"
+                stroke="#38bdf8"
                 strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#lightBlueGradient)"

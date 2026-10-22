@@ -44,6 +44,17 @@ export const api = {
     return res.json();
   },
 
+  async loadDemoCapture(demoId: 'port_scan' | 'web_traffic' | 'multi_threat'): Promise<Capture> {
+    const res = await fetch(`${API_BASE}/captures/demo/${demoId}`, {
+      method: 'POST',
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: { message: 'Demo load failed' } }));
+      throw new Error(err.error?.message || 'Failed to load demo capture');
+    }
+    return res.json();
+  },
+
   async getStatistics(captureId: string): Promise<Statistics> {
     const res = await fetch(`${API_BASE}/captures/${captureId}/statistics`);
     if (!res.ok) throw new Error('Failed to fetch capture statistics');

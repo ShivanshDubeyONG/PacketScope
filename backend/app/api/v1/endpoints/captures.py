@@ -45,6 +45,73 @@ async def upload_capture(
     return capture
 
 
+@router.post(
+    "/captures/demo/{demo_id}",
+    response_model=CaptureResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Load and analyze a preset presentation sample PCAP",
+)
+def load_demo_capture(
+    demo_id: str,
+    db: Session = Depends(get_db),
+):
+    """Load pre-generated presentation sample captures (port_scan, web_traffic, multi_threat)."""
+    import os
+    import shutil
+    import uuid
+    import hashlib
+    from backend.app.core.config import settings
+    from backend.app.core.exceptions import InvalidCaptureFileError
+
+    demo_map = {
+        "port_scan": ("demo_port_scan.pcap", "Port Scan & Reconnaissance Demo"),
+        "web_traffic": ("demo_web_cleartext.pcap", "Web Application Traffic Demo"),
+        "multi_threat": ("demo_multi_threat.pcap", "Multi-Threat Incident Demo"),
+    }
+
+    if demo_id not in demo_map:
+        raise InvalidCaptureFileError(f"Unknown demo ID '{demo_id}'. Choose from: {list(demo_map.keys())}")
+
+    filename, desc = demo_map[demo_id]
+    sample_path = os.path.join(settings.BASE_DIR.parent, "sample_data", filename)
+
+    if not os.path.exists(sample_path):
+        from scripts.generate_presentation_pcaps import generate_demo_1_port_scan, generate_demo_2_web_traffic, generate_demo_3_multi_threat
+        if demo_id == "port_scan":
+            sample_path = generate_demo_1_port_scan()
+        elif demo_id == "web_traffic":
+            sample_path = generate_demo_2_web_traffic()
+        else:
+            sample_path = generate_demo_3_multi_threat()
+
+    with open(sample_path, "rb") as f:
+        content = f.read()
+
+    cap_id = str(uuid.uuid4())
+    stored_name = f"{cap_id}.pcap"
+    dest_path = os.path.join(settings.UPLOAD_DIR, stored_name)
+
+    with open(dest_path, "wb") as f_out:
+        f_out.write(content)
+
+    sha256 = hashlib.sha256(content).hexdigest()
+    capture = Capture(
+        id=cap_id,
+        filename=stored_name,
+        original_filename=filename,
+        file_path=dest_path,
+        file_size=len(content),
+        file_hash_sha256=sha256,
+        status="pending",
+    )
+    db.add(capture)
+    db.commit()
+
+    CaptureService.process_capture_file(db, cap_id)
+    db.refresh(capture)
+    return capture
+
+
 @router.get(
     "/captures",
     response_model=CaptureListResponse,

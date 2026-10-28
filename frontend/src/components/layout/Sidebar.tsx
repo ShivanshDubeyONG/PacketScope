@@ -12,6 +12,7 @@ import {
   Network,
   Sun,
   Moon,
+  Globe,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -35,6 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navItems = [
     { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'cyber3d', label: '3D Threat Universe', icon: Globe },
     { id: 'packets', label: 'Packet Explorer', icon: Search },
     { id: 'alerts', label: 'Security Alerts', icon: ShieldAlert },
     { id: 'traffic', label: 'Traffic Intelligence', icon: Activity },

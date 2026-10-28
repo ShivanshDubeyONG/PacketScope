@@ -26,6 +26,10 @@ import { AlertsView } from './components/alerts/AlertsView';
 import { PacketExplorer } from './components/packets/PacketExplorer';
 import { CaptureHistory } from './components/history/CaptureHistory';
 import { ExportPanel } from './components/exports/ExportPanel';
+import { CyberTopology3D } from './components/cyber3d/CyberTopology3D';
+import { ThreatMatrixRadar } from './components/overview/ThreatMatrixRadar';
+import { ProtocolSpectrum } from './components/overview/ProtocolSpectrum';
+import { CyberHudBanner } from './components/cyber3d/CyberHudBanner';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('overview');
@@ -162,6 +166,13 @@ export function App() {
             </div>
           ) : (
             <>
+              {/* Cyber HUD Telemetry Ticker & Audio FX Banner */}
+              <CyberHudBanner
+                capture={currentCapture}
+                alertsData={alertsData}
+                onOpen3D={() => setActiveTab('cyber3d')}
+              />
+
               {/* Dashboard / Overview Tab */}
               {activeTab === 'overview' && (
                 <div className="space-y-6 animate-in fade-in duration-150">
@@ -300,6 +311,61 @@ export function App() {
                       conversations={statistics?.top_conversations || []}
                       darkMode={darkMode}
                     />
+                  </div>
+
+                  {/* Interactive 3D Cyber Topology Matrix Pod */}
+                  <CyberTopology3D
+                    capture={currentCapture}
+                    statistics={statistics}
+                    alertsData={alertsData}
+                    isCompact={true}
+                  />
+
+                  {/* Crazy Graphs Row: Threat Matrix Radar & Protocol Spectrum */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <ThreatMatrixRadar statistics={statistics} alertsData={alertsData} />
+                    <ProtocolSpectrum statistics={statistics} />
+                  </div>
+                </div>
+              )}
+
+              {/* 3D Threat Universe Presentation Tab */}
+              {activeTab === 'cyber3d' && (
+                <div className="space-y-6 animate-in fade-in duration-150">
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-slate-800/40">
+                    <div>
+                      <div className="text-[10px] font-bold text-sky-400 font-mono tracking-wider uppercase mb-1">
+                        HOLOGRAPHIC CYBER RADAR &amp; BALLISTIC PACKET ARCS
+                      </div>
+                      <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
+                        <span>3D Threat Topology Universe</span>
+                        <span className="text-xs font-mono font-medium bg-sky-500/20 text-sky-300 px-2.5 py-0.5 rounded-full border border-sky-500/30">
+                          THREE.JS WEBGL
+                        </span>
+                      </h1>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Real-time 3D planetary threat globe, gyro constellation orbits, and rotating radar beam sweep with live packet telemetry.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1.5 text-xs font-mono rounded-lg border bg-slate-900 border-slate-800 text-sky-300">
+                        Target: {currentCapture?.original_filename || 'demo.pcap'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Dedicated Full 3D Canvas */}
+                  <CyberTopology3D
+                    capture={currentCapture}
+                    statistics={statistics}
+                    alertsData={alertsData}
+                    isCompact={false}
+                  />
+
+                  {/* Dynamic Flow & Spectrum Rows */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <ThreatMatrixRadar statistics={statistics} alertsData={alertsData} />
+                    <ProtocolSpectrum statistics={statistics} />
                   </div>
                 </div>
               )}
